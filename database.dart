@@ -3,27 +3,35 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
 import 'person.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PersonDatabaseProvider {
-  PersonDatabaseProvider._();
+  PersonDatabaseProvider._() {
+    _initDatabase();
+  }
 
-  // Create a singleton instance of the PersonDatabaseProvider
   static final PersonDatabaseProvider db = PersonDatabaseProvider._();
-  
-  // Database field marked as 'late' for lazy initialization
-  late Database _database;
+  Database? _database; // Make the field nullable
 
-  // Getter method to get the database instance asynchronously
   Future<Database> get database async {
+    // Use a getter to handle possible null database
+    if (_database != null) return _database!;
+    await _initDatabase(); // Initialize the database if not already done
+    return _database!;
+  }
 
-    // If _database is already initialized, return the existing instance
-    if (_database != null) return _database;
-    
-    // If _database is not initialized, get the instance using getDatabaseInstance()
-    _database = await getDatabaseInstance();
-    return _database;
+  Future<void> _initDatabase() async {
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = join(directory.path, "person.db");
+    _database = await openDatabase(path, version: 1,
+        onCreate: (Database db, int version) async {
+      await db.execute("CREATE TABLE Person ("
+          "id integer primary key AUTOINCREMENT,"
+          "name TEXT,"
+          "city TEXT"
+          ")");
+    });
   }
 
   // Method to create or open the SQLite database
@@ -81,10 +89,6 @@ class PersonDatabaseProvider {
     final db = await database;
     db.delete("Person");
   }
-
-  updatePerson(Person updatedPerson) {}
-
-  addPersonToDatabase(Person newPerson) {}
 }
 
 
