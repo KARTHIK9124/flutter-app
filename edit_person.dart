@@ -15,7 +15,7 @@ class EditPerson extends StatefulWidget {
 
 class _EditPersonState extends State<EditPerson> {
   TextEditingController nameEditingController = TextEditingController();
-  TextEditingController emailEditingController = TextEditingController();
+  TextEditingController cityEditingController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -23,8 +23,10 @@ class _EditPersonState extends State<EditPerson> {
     super.initState();
     if (widget.edit) {
       nameEditingController.text = widget.person.name;
-      emailEditingController.text = widget.person.email;
+      cityEditingController.text = widget.person.city;
     }
+    //Future<List<Person>> person = PersonDatabaseProvider.db.getAllPersons();
+    //print(person);
   }
 
   @override
@@ -52,11 +54,11 @@ class _EditPersonState extends State<EditPerson> {
                   widget.edit ? widget.person.name : "",
                 ),
                 textFormField(
-                  emailEditingController,
-                  "Email",
-                  "Enter email",
+                  cityEditingController,
+                  "city",
+                  "Enter city",
                   Icons.email,
-                  widget.edit ? widget.person.email : "",
+                  widget.edit ? widget.person.city : "",
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -76,7 +78,7 @@ class _EditPersonState extends State<EditPerson> {
                         Person updatedPerson = Person(
                           id: widget.person.id,
                           name: nameEditingController.text,
-                          email: emailEditingController.text,
+                          city: cityEditingController.text,
                         );
                         await PersonDatabaseProvider.db
                             .updatePerson(updatedPerson);
@@ -84,7 +86,7 @@ class _EditPersonState extends State<EditPerson> {
                         // Add a new person
                         Person newPerson = Person(
                           name: nameEditingController.text,
-                          email: emailEditingController.text,
+                          city: cityEditingController.text,
                           id: 0,
                         );
                         await PersonDatabaseProvider.db

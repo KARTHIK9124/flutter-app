@@ -1,12 +1,12 @@
 class Person {
-  int id;
+  int? id;
   String name;
-  String email;
+  String city;
 
   Person({
     required this.id,
     required this.name,
-    required this.email,
+    required this.city,
   });
 
   // Convert the Person object to a Map object
@@ -14,16 +14,16 @@ class Person {
     return {
       'id': id,
       'name': name,
-      'email': email,
+      'city': city,
     };
   }
 
   // Create a Person object from a Map object
-  factory Person.fromMap(Map<String, Object?> map) {
+  factory Person.fromMap(Map<String, Object?> json) {
     return Person(
-      id: map['id'] as int,
-      name: map['name'] as String,
-      email: map['email'] as String,
+      id: json['id'] as int,
+      name: json['name'] as String,
+      city: json['city'] as String,
     );
   }
 }

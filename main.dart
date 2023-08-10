@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'home_page.dart';
+
 
 void main() {
   runApp(MyApp());
+   {
+  sqfliteFfiInit();
+  databaseFactory = databaseFactoryFfi;
+
+  runApp(MyApp());
+}
 }
 
 class MyApp extends StatelessWidget {
@@ -39,6 +47,8 @@ class MyApp extends StatelessWidget {
     if (userList != null) {
       return List<Map<String, dynamic>>.from(userList);
     }
+       //Future<List<Person>> person = PersonDatabaseProvider.db.getAllPersons();
+    //print(person);
     return [];
   }
 }

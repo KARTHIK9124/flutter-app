@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'database.dart'; 
 import 'edit_person.dart';
 import 'person.dart';
@@ -36,7 +35,7 @@ class _PersonListPageState extends State<PersonListPage> {
               final person = snapshot.data![index];
               return ListTile(
                 title: Text(person.name),
-                subtitle: Text(person.email),
+                subtitle: Text(person.city),
                 leading: CircleAvatar(child: Text(person.id.toString())),
                 onTap: () {
                   // Navigate to edit person page when tapped

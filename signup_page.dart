@@ -48,6 +48,8 @@ class _SignupPageState extends State<SignupPage> {
   void initState() {
     super.initState();
     _loadUsers();
+    //Future<List<Person>> person = PersonDatabaseProvider.db.getAllPersons();
+    //print("database");
   }
 
   void _loadUsers() {
@@ -97,7 +99,7 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   void _updateEmail(String newEmail) async {
-    // ... (Existing code)
+    
 
     // Update the email for the current user in the list
     int currentUserIndex = users.indexWhere((user) => user.username == _usernameController.text);
@@ -106,17 +108,16 @@ class _SignupPageState extends State<SignupPage> {
       saveUsers(users);
     }
 
-    // ... (Existing code)
   }
 
   void _deleteUserData() async {
-    // ... (Existing code)
+    
 
     // Delete the current user from the list
     users.removeWhere((user) => user.username == _usernameController.text);
     saveUsers(users);
 
-    // ... (Existing code)
+   
   }
 
   void saveUsers(List<User> users) async {

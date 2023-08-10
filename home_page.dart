@@ -4,6 +4,7 @@ import 'login_page.dart';
 import 'signup_page.dart';
 import 'todo_list.dart';
 import 'user_list.dart';
+import 'person_list_page.dart'; // Import the person list page
 
 class HomePage extends StatefulWidget {
   final List<Map<String, dynamic>> users; // Pass the list of users to HomePage
@@ -107,7 +108,7 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('User List'), // Add User List item to the drawer
+              title: const Text('User List'), 
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -116,6 +117,19 @@ class _HomePageState extends State<HomePage> {
                     builder: (context) => UserListPage(
                       userList: widget.users.map((userJson) => User.fromJson(userJson)).toList(),
                     ),
+                  ),
+                );
+              },
+            ),
+            // New entry for Person List
+            ListTile(
+              title: const Text('Person List'), 
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PersonListPage(), // Navigate to PersonListPage
                   ),
                 );
               },
