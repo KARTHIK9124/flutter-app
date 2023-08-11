@@ -3,7 +3,6 @@ import 'database.dart';
 import 'edit_person.dart';
 import 'person.dart';
 
-
 class PersonListPage extends StatefulWidget {
   @override
   _PersonListPageState createState() => _PersonListPageState();
@@ -28,9 +27,9 @@ class _PersonListPageState extends State<PersonListPage> {
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(child: Text('No data available.'));
           }
-          // Display the list of persons
+          // Display the list of persons starting from ID 1
           return ListView.builder(
-            itemCount: snapshot.data?.length,
+            itemCount: snapshot.data!.length,
             itemBuilder: (BuildContext context, int index) {
               final person = snapshot.data![index];
               return ListTile(
@@ -49,10 +48,40 @@ class _PersonListPageState extends State<PersonListPage> {
                     ),
                   );
                 },
+                trailing: IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () async {
+                    // Delete person with the specific ID
+                    await PersonDatabaseProvider.db.deletePersonWithId(person.id!);
+                    setState(() {}); // Refresh the UI
+                  },
+                ),
               );
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          // Navigate to the EditPerson page when the button is pressed
+          final newPerson = Person(name: '', city: ''); // Initialize with empty values
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => EditPerson(
+                edit: false, // Adding a new person
+                person: newPerson,
+              ),
+            ),
+          );
+
+          if (newPerson.name.isNotEmpty && newPerson.city.isNotEmpty) {
+            // If the newPerson is not empty, add it to the database and refresh the list
+            await PersonDatabaseProvider.db.addPersonToDatabase(newPerson);
+            setState(() {}); // Refresh the UI
+          }
+        },
+        child: Icon(Icons.add),
       ),
     );
   }

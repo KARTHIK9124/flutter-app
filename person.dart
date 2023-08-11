@@ -4,7 +4,7 @@ class Person {
   String city;
 
   Person({
-    required this.id,
+    this.id,
     required this.name,
     required this.city,
   });
@@ -12,7 +12,6 @@ class Person {
   // Convert the Person object to a Map object
   Map<String, Object?> toMap() {
     return {
-      'id': id,
       'name': name,
       'city': city,
     };

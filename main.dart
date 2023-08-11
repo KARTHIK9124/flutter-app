@@ -47,8 +47,6 @@ class MyApp extends StatelessWidget {
     if (userList != null) {
       return List<Map<String, dynamic>>.from(userList);
     }
-       //Future<List<Person>> person = PersonDatabaseProvider.db.getAllPersons();
-    //print(person);
     return [];
   }
 }
