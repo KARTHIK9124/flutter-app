@@ -4,10 +4,10 @@ import 'person.dart';
 
 class EditPerson extends StatefulWidget {
   final bool edit;
-  final Person person;
+  final Person? person;
 
-  EditPerson({required this.edit, required this.person, Key? key})
-      : super(key: key);
+  EditPerson(this.edit, {this.person})
+      : assert(edit == true || person == null);
 
   @override
   _EditPersonState createState() => _EditPersonState();
@@ -15,18 +15,59 @@ class EditPerson extends StatefulWidget {
 
 class _EditPersonState extends State<EditPerson> {
   TextEditingController nameEditingController = TextEditingController();
+  TextEditingController firstNameEditingController = TextEditingController();
+  TextEditingController lastNameEditingController = TextEditingController();
   TextEditingController cityEditingController = TextEditingController();
+  TextEditingController phoneNumberEditingController = TextEditingController();
+  TextEditingController emailEditingController = TextEditingController();
+  TextEditingController addressEditingController = TextEditingController();
+  TextEditingController postalCodeEditingController = TextEditingController();
+  bool active = false; // Default inactive
+  bool _isFirstNameValid = false;
+  bool _isLastNameValid = false;
+  bool _isEmailValid = false;
+  bool _isPhoneNumberValid = false;
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
     if (widget.edit) {
-      nameEditingController.text = widget.person.name;
-      cityEditingController.text = widget.person.city;
+      nameEditingController.text = widget.person!.name;
+      firstNameEditingController.text = widget.person!.first_name;
+      lastNameEditingController.text = widget.person!.last_name;
+      cityEditingController.text = widget.person!.city;
+      phoneNumberEditingController.text = widget.person!.phone_number;
+      emailEditingController.text = widget.person!.email;
+      addressEditingController.text = widget.person!.address;
+      postalCodeEditingController.text = widget.person!.postal_code;
+      active = widget.person!.active;
     }
-    //Future<List<Person>> person = PersonDatabaseProvider.db.getAllPersons();
-    //print(person);
+  }
+
+  void _validateFirstName(String value) {
+    setState(() {
+      _isFirstNameValid = value.length >= 8 && value.length <= 16;
+    });
+  }
+
+  void _validateLastName(String value) {
+    setState(() {
+      _isLastNameValid = value.length >= 6 && value.length <= 16;
+    });
+  }
+
+  void _validateEmail(String value) {
+    setState(() {
+      _isEmailValid = value.length <= 25 && value.contains('@');
+    });
+  }
+
+  void _validatePhoneNumber(String value) {
+    setState(() {
+      _isPhoneNumberValid = value.length <= 12 && int.tryParse(value) != null;
+    });
   }
 
   @override
@@ -43,42 +84,110 @@ class _EditPersonState extends State<EditPerson> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                FlutterLogo(
-                  size: 300,
+                FlutterLogo(size: 300),
+                textFormField(
+                  controller: nameEditingController,
+                  label: "Name",
+                  hint: "Enter Name",
+                  iconData: Icons.person,
+                  initialValue: widget.edit ? widget.person!.name : "",
+                  isValid: _isFirstNameValid,
+                  validationFunction: _validateFirstName,
                 ),
                 textFormField(
-                  nameEditingController,
-                  "Name",
-                  "Enter Name",
-                  Icons.person,
-                  widget.edit ? widget.person.name : "",
+                  controller: firstNameEditingController,
+                  label: "First Name",
+                  hint: "Enter First Name",
+                  iconData: Icons.person,
+                  initialValue: widget.edit ? widget.person!.first_name : "",
+                  isValid: _isFirstNameValid,
+                  validationFunction: _validateFirstName,
                 ),
                 textFormField(
-                  cityEditingController,
-                  "city",
-                  "Enter city",
-                  Icons.email,
-                  widget.edit ? widget.person.city : "",
+                  controller: lastNameEditingController,
+                  label: "Last Name",
+                  hint: "Enter Last Name",
+                  iconData: Icons.person,
+                  initialValue: widget.edit ? widget.person!.last_name : "",
+                  isValid: _isLastNameValid,
+                  validationFunction: _validateLastName,
+                ),
+                textFormField(
+                  controller: cityEditingController,
+                  label: "City",
+                  hint: "Enter City",
+                  iconData: Icons.place,
+                  initialValue: widget.edit ? widget.person!.city : "",
+                  isValid: true,
+                  validationFunction: (value) {},
+                ),
+                textFormField(
+                  controller: phoneNumberEditingController,
+                  label: "Phone Number",
+                  hint: "Enter Phone Number",
+                  iconData: Icons.phone,
+                  initialValue: widget.edit ? widget.person!.phone_number : "",
+                  isValid: _isPhoneNumberValid,
+                  validationFunction: _validatePhoneNumber,
+                ),
+                textFormField(
+                  controller: emailEditingController,
+                  label: "Email",
+                  hint: "Enter Email",
+                  iconData: Icons.email,
+                  initialValue: widget.edit ? widget.person!.email : "",
+                  isValid: _isEmailValid,
+                  validationFunction: _validateEmail,
+                ),
+                textFormField(
+                  controller: addressEditingController,
+                  label: "Address",
+                  hint: "Enter Address",
+                  iconData: Icons.place,
+                  initialValue: widget.edit ? widget.person!.address : "",
+                  isValid: true,
+                  validationFunction: (value) {},
+                ),
+                textFormField(
+                  controller: postalCodeEditingController,
+                  label: "Postal Code",
+                  hint: "Enter Postal Code",
+                  iconData: Icons.location_on,
+                  initialValue: widget.edit ? widget.person!.postal_code : "",
+                  isValid: true,
+                  validationFunction: (value) {},
+                ),
+                CheckboxListTile(
+                  title: Text("Active Status"),
+                  value: active,
+                  onChanged: (value) {
+                    setState(() {
+                      active = value!;
+                    });
+                  },
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   onPressed: () async {
-                    if (!_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please enter valid data')),
-                      );
-                    } else {
+                    if (_formKey.currentState!.validate()) {
                       if (widget.edit) {
                         // Update an existing person
                         Person updatedPerson = Person(
-                          id: widget.person.id,
+                          id: widget.person!.id,
                           name: nameEditingController.text,
+                          first_name: firstNameEditingController.text,
+                          last_name: lastNameEditingController.text,
                           city: cityEditingController.text,
+                          phone_number: phoneNumberEditingController.text,
+                          email: emailEditingController.text,
+                          address: addressEditingController.text,
+                          postal_code: postalCodeEditingController.text,
+                          active: active,
                         );
                         await PersonDatabaseProvider.db
                             .updatePerson(updatedPerson);
@@ -86,13 +195,23 @@ class _EditPersonState extends State<EditPerson> {
                         // Add a new person
                         Person newPerson = Person(
                           name: nameEditingController.text,
+                          first_name: firstNameEditingController.text,
+                          last_name: lastNameEditingController.text,
+                          phone_number: phoneNumberEditingController.text,
+                          email: emailEditingController.text,
+                          address: addressEditingController.text,
+                          postal_code: postalCodeEditingController.text,
+                          active: active,
                           city: cityEditingController.text,
-                          id: 0,
                         );
                         await PersonDatabaseProvider.db
                             .addPersonToDatabase(newPerson);
                       }
                       Navigator.pop(context);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please enter valid data')),
+                      );
                     }
                   },
                   child: Text(
@@ -108,21 +227,26 @@ class _EditPersonState extends State<EditPerson> {
     );
   }
 
-  TextFormField textFormField(
-    TextEditingController t,
-    String label,
-    String hint,
-    IconData iconData,
-    String initialValue,
-  ) {
+  TextFormField textFormField({
+    required TextEditingController controller,
+    required String label,
+    required String hint,
+    required IconData iconData,
+    required String initialValue,
+    required bool isValid,
+    required void Function(String) validationFunction,
+  }) {
     return TextFormField(
+      onChanged: validationFunction,
       validator: (value) {
         if (value!.isEmpty) {
           return 'Please enter some text';
+        } else if (!isValid) {
+          return 'Invalid input';
         }
         return null;
       },
-      controller: t,
+      controller: controller,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
         prefixIcon: Icon(iconData),

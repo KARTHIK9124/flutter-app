@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
     if (userList != null) {
       return List<Map<String, dynamic>>.from(userList);
     }
+
     return [];
   }
 }

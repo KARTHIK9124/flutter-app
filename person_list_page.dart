@@ -14,74 +14,65 @@ class _PersonListPageState extends State<PersonListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Person List'),
+        actions: <Widget>[
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              primary: Theme.of(context).primaryColor,
+            ),
+            onPressed: () {
+              PersonDatabaseProvider.db.deleteAllPersons();
+              setState(() {});
+            },
+            child: Text(
+              "Delete all",
+              style: TextStyle(color: Colors.yellow),
+            ),
+          )
+        ],
       ),
       body: FutureBuilder<List<Person>>(
         future: PersonDatabaseProvider.db.getAllPersons(),
         builder: (BuildContext context, AsyncSnapshot<List<Person>> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: snapshot.data?.length,
+              itemBuilder: (BuildContext context, int index) {
+                Person? item = snapshot.data?[index];
+                return Dismissible(
+                  key: UniqueKey(),
+                  background: Container(color: Colors.blue),
+                  onDismissed: (direction) {
+                    PersonDatabaseProvider.db.deletePersonWithId(item!.id!);
+                  },
+                  child: ListTile(
+                    title: Text(item!.name),
+                    subtitle: Text(item!.city),
+                    leading: CircleAvatar(child: Text(item.id.toString())),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => EditPerson(
+                          true,
+                          person: item,
+                        ),
+                      ));
+                    },
+                  ),
+                );
+              },
+            );
+          } else {
             return Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          }
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No data available.'));
-          }
-          // Display the list of persons starting from ID 1
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (BuildContext context, int index) {
-              final person = snapshot.data![index];
-              return ListTile(
-                title: Text(person.name),
-                subtitle: Text(person.city),
-                leading: CircleAvatar(child: Text(person.id.toString())),
-                onTap: () {
-                  // Navigate to edit person page when tapped
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EditPerson(
-                        edit: true,
-                        person: person,
-                      ),
-                    ),
-                  );
-                },
-                trailing: IconButton(
-                  icon: Icon(Icons.delete),
-                  onPressed: () async {
-                    // Delete person with the specific ID
-                    await PersonDatabaseProvider.db.deletePersonWithId(person.id!);
-                    setState(() {}); // Refresh the UI
-                  },
-                ),
-              );
-            },
-          );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          // Navigate to the EditPerson page when the button is pressed
-          final newPerson = Person(name: '', city: ''); // Initialize with empty values
-          await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EditPerson(
-                edit: false, // Adding a new person
-                person: newPerson,
-              ),
-            ),
-          );
-
-          if (newPerson.name.isNotEmpty && newPerson.city.isNotEmpty) {
-            // If the newPerson is not empty, add it to the database and refresh the list
-            await PersonDatabaseProvider.db.addPersonToDatabase(newPerson);
-            setState(() {}); // Refresh the UI
-          }
-        },
         child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => EditPerson(false)),
+          );
+        },
       ),
     );
   }
