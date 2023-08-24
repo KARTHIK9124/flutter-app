@@ -139,6 +139,7 @@ class _SignupPageState extends State<SignupPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Signup Page'),
+        backgroundColor: Colors.purpleAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

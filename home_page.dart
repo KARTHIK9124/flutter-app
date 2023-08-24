@@ -37,13 +37,14 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home Page'),
+        backgroundColor: Colors.purpleAccent,
       ),
       body: Center(
         child: Container(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(10.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12.0),
-            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(10.0),
+            color: Colors.white70,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -54,13 +55,14 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 24.0,
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
-                  color: Colors.deepPurple,
+                  color: Colors.purpleAccent[400],
                 ),
               ),
               const SizedBox(height: 20),
               Text(
                 'Hello, $_userName!', // Display the user's name here
-                style: TextStyle(fontSize: 18),
+                style: TextStyle(fontSize: 18,color: Colors.black),
+
               ),
             ],
           ),
@@ -71,12 +73,14 @@ class _HomePageState extends State<HomePage> {
           children: [
             ListTile(
               title: const Text('Home'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Login'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -87,6 +91,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('Signup'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -97,6 +102,7 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: const Text('ToDo List'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -108,7 +114,8 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              title: const Text('User List'), 
+              title: const Text('User List'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -123,7 +130,8 @@ class _HomePageState extends State<HomePage> {
             ),
             // New entry for Person List
             ListTile(
-              title: const Text('Person List'), 
+              title: const Text('Person List'),
+              textColor: Colors.black,
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(

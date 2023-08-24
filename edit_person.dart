@@ -23,10 +23,6 @@ class _EditPersonState extends State<EditPerson> {
   TextEditingController addressEditingController = TextEditingController();
   TextEditingController postalCodeEditingController = TextEditingController();
   bool active = false; // Default inactive
-  bool _isFirstNameValid = false;
-  bool _isLastNameValid = false;
-  bool _isEmailValid = false;
-  bool _isPhoneNumberValid = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -34,6 +30,7 @@ class _EditPersonState extends State<EditPerson> {
   void initState() {
     super.initState();
     if (widget.edit) {
+      // Initialize text controllers with person data
       nameEditingController.text = widget.person!.name;
       firstNameEditingController.text = widget.person!.first_name;
       lastNameEditingController.text = widget.person!.last_name;
@@ -46,180 +43,210 @@ class _EditPersonState extends State<EditPerson> {
     }
   }
 
-  void _validateFirstName(String value) {
-    setState(() {
-      _isFirstNameValid = value.length >= 8 && value.length <= 16;
-    });
-  }
-
-  void _validateLastName(String value) {
-    setState(() {
-      _isLastNameValid = value.length >= 6 && value.length <= 16;
-    });
-  }
-
-  void _validateEmail(String value) {
-    setState(() {
-      _isEmailValid = value.length <= 25 && value.contains('@');
-    });
-  }
-
-  void _validatePhoneNumber(String value) {
-    setState(() {
-      _isPhoneNumberValid = value.length <= 12 && int.tryParse(value) != null;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.edit ? "Edit Person" : "Add Person"),
+        backgroundColor: Color.fromARGB(255, 67, 64, 251),
       ),
       body: Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                FlutterLogo(size: 300),
-                textFormField(
-                  controller: nameEditingController,
-                  label: "Name",
-                  hint: "Enter Name",
-                  iconData: Icons.person,
-                  initialValue: widget.edit ? widget.person!.name : "",
-                  isValid: _isFirstNameValid,
-                  validationFunction: _validateFirstName,
-                ),
-                textFormField(
-                  controller: firstNameEditingController,
-                  label: "First Name",
-                  hint: "Enter First Name",
-                  iconData: Icons.person,
-                  initialValue: widget.edit ? widget.person!.first_name : "",
-                  isValid: _isFirstNameValid,
-                  validationFunction: _validateFirstName,
-                ),
-                textFormField(
-                  controller: lastNameEditingController,
-                  label: "Last Name",
-                  hint: "Enter Last Name",
-                  iconData: Icons.person,
-                  initialValue: widget.edit ? widget.person!.last_name : "",
-                  isValid: _isLastNameValid,
-                  validationFunction: _validateLastName,
-                ),
-                textFormField(
-                  controller: cityEditingController,
-                  label: "City",
-                  hint: "Enter City",
-                  iconData: Icons.place,
-                  initialValue: widget.edit ? widget.person!.city : "",
-                  isValid: true,
-                  validationFunction: (value) {},
-                ),
-                textFormField(
-                  controller: phoneNumberEditingController,
-                  label: "Phone Number",
-                  hint: "Enter Phone Number",
-                  iconData: Icons.phone,
-                  initialValue: widget.edit ? widget.person!.phone_number : "",
-                  isValid: _isPhoneNumberValid,
-                  validationFunction: _validatePhoneNumber,
-                ),
-                textFormField(
-                  controller: emailEditingController,
-                  label: "Email",
-                  hint: "Enter Email",
-                  iconData: Icons.email,
-                  initialValue: widget.edit ? widget.person!.email : "",
-                  isValid: _isEmailValid,
-                  validationFunction: _validateEmail,
-                ),
-                textFormField(
-                  controller: addressEditingController,
-                  label: "Address",
-                  hint: "Enter Address",
-                  iconData: Icons.place,
-                  initialValue: widget.edit ? widget.person!.address : "",
-                  isValid: true,
-                  validationFunction: (value) {},
-                ),
-                textFormField(
-                  controller: postalCodeEditingController,
-                  label: "Postal Code",
-                  hint: "Enter Postal Code",
-                  iconData: Icons.location_on,
-                  initialValue: widget.edit ? widget.person!.postal_code : "",
-                  isValid: true,
-                  validationFunction: (value) {},
-                ),
-                CheckboxListTile(
-                  title: Text("Active Status"),
-                  value: active,
-                  onChanged: (value) {
-                    setState(() {
-                      active = value!;
-                    });
-                  },
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FlutterLogo(size: 100),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: nameEditingController,
+                    label: "Name",
+                    hint: "Enter Name (5-15 characters)",
+                    iconData: Icons.person,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Name is required';
+                      } else if (value.length < 5 || value.length > 15) {
+                        return 'Name should be 5 to 15 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: firstNameEditingController,
+                    label: "First Name",
+                    hint: "Enter First Name (5-15 characters)",
+                    iconData: Icons.person,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'First name is required';
+                      } else if (value.length < 5 || value.length > 15) {
+                        return 'First name should be 5 to 15 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: lastNameEditingController,
+                    label: "Last Name",
+                    hint: "Enter Last Name (5-15 characters)",
+                    iconData: Icons.person,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Last name is required';
+                      } else if (value.length < 5 || value.length > 15) {
+                        return 'Last name should be 5 to 15 characters long';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: cityEditingController,
+                    label: "City",
+                    hint: "Enter City (max 10 characters)",
+                    iconData: Icons.place,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'City is required';
+                      } else if (value.length < 5 || value.length > 10) {
+                        return 'City should have maximum 10 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: phoneNumberEditingController,
+                    label: "Phone Number",
+                    hint: "Enter Phone Number (10 digits)",
+                    iconData: Icons.phone,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Phone number is required';
+                      } else if (value.length != 10 || int.tryParse(value) == null) {
+                        return 'Invalid phone number';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: emailEditingController,
+                    label: "Email",
+                    hint: "Enter Email (max 25 characters)",
+                    iconData: Icons.email,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Email is required';
+                      } else if (value.length > 25 || !value.contains('@')) {
+                        return 'Invalid email format';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: addressEditingController,
+                    label: "Address",
+                    hint: "Enter Address (max 30 characters)",
+                    iconData: Icons.place,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Address is required';
+                      } else if (value.length > 30) {
+                        return 'Address should only have maximum 30 characters';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  customTextField(
+                    controller: postalCodeEditingController,
+                    label: "Postal Code",
+                    hint: "Enter Postal Code (max 10 digits)",
+                    iconData: Icons.location_on,
+                    validator: (value) {
+                      if (value != null && (value.length > 10 || int.tryParse(value) == null)) {
+                        return 'Invalid postal code';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 10),
+                  CheckboxListTile(
+                    title: Text("Active Status"),
+                    value: active,
+                    onChanged: (value) {
+                      setState(() {
+                        active = value!;
+                      });
+                    },
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        if (_areAllFieldsEmpty()) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Please enter at least one field')),
+                          );
+                        } else {
+                          if (widget.edit) {
+                            // Update an existing person
+                            Person updatedPerson = Person(
+                              id: widget.person!.id,
+                              name: nameEditingController.text,
+                              first_name: firstNameEditingController.text,
+                              last_name: lastNameEditingController.text,
+                              city: cityEditingController.text,
+                              phone_number: phoneNumberEditingController.text,
+                              email: emailEditingController.text,
+                              address: addressEditingController.text,
+                              postal_code: postalCodeEditingController.text,
+                              active: active,
+                            );
+                            await PersonDatabaseProvider.db.updatePerson(updatedPerson);
+                          } else {
+                            // Add a new person
+                            Person newPerson = Person(
+                              name: nameEditingController.text,
+                              first_name: firstNameEditingController.text,
+                              last_name: lastNameEditingController.text,
+                              phone_number: phoneNumberEditingController.text,
+                              email: emailEditingController.text,
+                              address: addressEditingController.text,
+                              postal_code: postalCodeEditingController.text,
+                              active: active,
+                              city: cityEditingController.text,
+                            );
+                            await PersonDatabaseProvider.db.addPersonToDatabase(newPerson);
+                          }
+                          Navigator.pop(context);
+                        }
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Please enter valid data')),
+                        );
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      if (widget.edit) {
-                        // Update an existing person
-                        Person updatedPerson = Person(
-                          id: widget.person!.id,
-                          name: nameEditingController.text,
-                          first_name: firstNameEditingController.text,
-                          last_name: lastNameEditingController.text,
-                          city: cityEditingController.text,
-                          phone_number: phoneNumberEditingController.text,
-                          email: emailEditingController.text,
-                          address: addressEditingController.text,
-                          postal_code: postalCodeEditingController.text,
-                          active: active,
-                        );
-                        await PersonDatabaseProvider.db
-                            .updatePerson(updatedPerson);
-                      } else {
-                        // Add a new person
-                        Person newPerson = Person(
-                          name: nameEditingController.text,
-                          first_name: firstNameEditingController.text,
-                          last_name: lastNameEditingController.text,
-                          phone_number: phoneNumberEditingController.text,
-                          email: emailEditingController.text,
-                          address: addressEditingController.text,
-                          postal_code: postalCodeEditingController.text,
-                          active: active,
-                          city: cityEditingController.text,
-                        );
-                        await PersonDatabaseProvider.db
-                            .addPersonToDatabase(newPerson);
-                      }
-                      Navigator.pop(context);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please enter valid data')),
-                      );
-                    }
-                  },
-                  child: Text(
-                    "Save",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
@@ -227,25 +254,15 @@ class _EditPersonState extends State<EditPerson> {
     );
   }
 
-  TextFormField textFormField({
+  TextFormField customTextField({
     required TextEditingController controller,
     required String label,
     required String hint,
     required IconData iconData,
-    required String initialValue,
-    required bool isValid,
-    required void Function(String) validationFunction,
+    required String? Function(String?) validator,
   }) {
     return TextFormField(
-      onChanged: validationFunction,
-      validator: (value) {
-        if (value!.isEmpty) {
-          return 'Please enter some text';
-        } else if (!isValid) {
-          return 'Invalid input';
-        }
-        return null;
-      },
+      validator: validator,
       controller: controller,
       textCapitalization: TextCapitalization.words,
       decoration: InputDecoration(
@@ -255,5 +272,16 @@ class _EditPersonState extends State<EditPerson> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
+  }
+
+  bool _areAllFieldsEmpty() {
+    return nameEditingController.text.isEmpty &&
+        firstNameEditingController.text.isEmpty &&
+        lastNameEditingController.text.isEmpty &&
+        cityEditingController.text.isEmpty &&
+        phoneNumberEditingController.text.isEmpty &&
+        emailEditingController.text.isEmpty &&
+        addressEditingController.text.isEmpty &&
+        postalCodeEditingController.text.isEmpty;
   }
 }
